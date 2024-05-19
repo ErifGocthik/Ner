@@ -1,0 +1,94 @@
+{% extends 'root.html' %}
+{% load static %}
+{% block js %}
+    <script src="{% static 'js/dynamic.js' %}"></script>
+    <script src="{% static 'js/uploadImages.js' %}"></script>
+    <script src="{% static 'js/detailImage.js' %}"></script>
+    <script src="{% static 'js/addInArchives.js' %}"></script>
+    <script src="{% static 'js/download.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <div class="content-images">
+        <div class="size-disk">
+            <div class="progress" style="width: {{ natural_size }}%;"></div>
+        </div>
+        <div class="size">
+            <p>{{ global_size }} / 20Гб</p>
+        </div>
+        <div class="search-filter">
+            <form action="." method="get" id="images-upload-form">
+                <input type="search" name="search" placeholder=" Поиск по названию"
+                       style="background-image: url('{% static 'icons/magnifying-glass.png' %}')">
+                <input type="submit" value="Поиск">
+            </form>
+            <p style="background-image: url('{% static 'icons/setting.png' %}')"></p>
+            <p style="background-image: url('{% static 'icons/downloads.png' %}')" class="upload"></p>
+        </div>
+        <div class="images">
+            {% for image in images %}
+                <div class="card id_{{ image.pk }}"
+                     style="background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.4)), url('{{ image.image.url }}')">
+                    <div class="title"><p style="word-break: break-all; width: 100%">{{ image.name }}</p></div>
+                    <div class="img-info">
+                        <p>{{ image.width }} × {{ image.height }} <img src="{% static 'icons/maximize.png' %}" alt="">
+                        </p>
+                        <p>{{ image.get_size }} <img src="{% static 'icons/pie-chart.png' %}" alt=""></p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="modal-window">
+        <div class="window">
+            <form action="." method="post" enctype="multipart/form-data">
+                <label for="file-image">
+                    {% csrf_token %}
+                    <p>
+                        <input type="file" name="file-image" accept="image/*" multiple class="files">
+                    </p>
+                    <p><input type="submit" value="Загрузить" class="upload-btn"></p>
+                </label>
+            </form>
+        </div>
+    </div>
+    <div class="modal_window_image_detail_id">
+        <div class="image_menu">
+            <div class="back"><img src="{% static 'icons/arrow-left_icon-icons.com_72376.png' %}" alt=""></div>
+            <div class="options">
+                <div>
+                    <img src="{% static 'icons/sharing_share_icon_124236.png' %}" alt="">
+                </div>
+                <div class="download">
+                    <img src="{% static 'icons/downloads.png' %}" alt="">
+                </div>
+                <div>
+                    <img src="{% static 'icons/favourites-star-outline-interface-symbol_icon-icons.com_73254.png' %}"
+                         alt="">
+                </div>
+                <div class="archive-btn-add">
+                    <img src="{% static 'icons/Архив-иконка.png' %}" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="window_image_detail_id">
+            <img src="{% static 'icons/YsLK_igrOu0.jpg' %}" alt="">
+        </div>
+    </div>
+    <div class="modal_window_add_in_archive">
+        <div class="archives">
+            {% for archive in archives %}
+                <div class="archive id_{{ archive.pk }}">
+                    <div class="img" style="background-image: url('{{ archive.images.last.image.url }}'); background-size: 200%; background-position: center"></div>
+                    <div class="content">
+                        <p>{{ archive.name }}</p>
+                        <p>{{ archive.images.count }}</p>
+                    </div>
+                </div>
+                {% if archives.count > 1 %}
+                    <hr>
+                {% endif %}
+            {% endfor %}
+            <button class="accept-btn">Подтвердить</button>
+        </div>
+    </div>
+{% endblock %}
